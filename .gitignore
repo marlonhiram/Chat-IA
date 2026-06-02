@@ -1,0 +1,20 @@
+# Dependências
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Variáveis de ambiente — NUNCA suba isso para o Git
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+
+.vercel
