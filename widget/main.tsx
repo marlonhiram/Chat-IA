@@ -18,9 +18,9 @@ class DknChatElement extends HTMLElement {
     shadow.appendChild(style);
 
     // Copia as classes CSS globais do Next.js para dentro do shadow root
-    document.querySelectorAll('link[rel="stylesheet"], style').forEach(el => {
-      shadow.appendChild(el.cloneNode(true));
-    });
+    //document.querySelectorAll('link[rel="stylesheet"], style').forEach(el => {
+    //  shadow.appendChild(el.cloneNode(true));
+    //});
 
     const container = document.createElement('div');
     shadow.appendChild(container);
