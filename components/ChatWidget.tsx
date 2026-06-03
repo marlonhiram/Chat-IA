@@ -32,6 +32,7 @@ export function ChatWidget() {
     setTyping(true);
 
     try {
+      const API_URL = process.env.NEXT_PUBLIC_CHAT_API_URL ?? 'https://project-0qgvo.vercel.app';
       const res  = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
