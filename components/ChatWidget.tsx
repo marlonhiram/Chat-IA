@@ -33,7 +33,7 @@ export function ChatWidget() {
 
     try {
       const API_URL = process.env.NEXT_PUBLIC_CHAT_API_URL ?? 'https://project-0qgvo.vercel.app';
-      const res  = await fetch('/api/chat', {
+      const res = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: next, sessionId })
