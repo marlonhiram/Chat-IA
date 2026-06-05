@@ -1,0 +1,251 @@
+
+<h2 class="sr-only">Dashboard de demanda de conversas — abril e maio de 2026</h2>
+
+<style>
+.card-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 20px; }
+.card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+.card-label { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px; }
+.card-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+.card-sub { font-size: 12px; color: var(--color-text-tertiary); margin: 4px 0 0; }
+.chart-wrap { position: relative; width: 100%; height: 260px; margin-bottom: 20px; }
+.chart-wrap-sm { position: relative; width: 100%; height: 200px; }
+.leg { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; font-size: 12px; color: var(--color-text-secondary); }
+.leg span { display: flex; align-items: center; gap: 5px; }
+.leg-sq { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin: 0 0 10px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+</style>
+
+<div class="card-grid">
+  <div class="card">
+    <p class="card-label">Total maio</p>
+    <p class="card-value">197</p>
+    <p class="card-sub">29 dias registrados</p>
+  </div>
+  <div class="card">
+    <p class="card-label">Total abril</p>
+    <p class="card-value">185</p>
+    <p class="card-sub">30 dias registrados</p>
+  </div>
+  <div class="card">
+    <p class="card-label">Média diária útil — maio</p>
+    <p class="card-value" id="med-mai">—</p>
+    <p class="card-sub">excl. fins de semana e feriados</p>
+  </div>
+  <div class="card">
+    <p class="card-label">Média diária útil — abril</p>
+    <p class="card-value" id="med-abr">—</p>
+    <p class="card-sub">excl. fins de semana e feriados</p>
+  </div>
+</div>
+
+<p class="section-title">Conversas por dia útil — maio vs abril</p>
+<div class="leg">
+  <span><span class="leg-sq" style="background:#378ADD"></span>Maio 2026</span>
+  <span><span class="leg-sq" style="background:#1D9E75"></span>Abril 2026</span>
+  <span><span class="leg-sq" style="background:#E8E8E8"></span>Fim de semana / feriado</span>
+</div>
+<div class="chart-wrap">
+  <canvas id="chartComparativo" role="img" aria-label="Gráfico de barras comparando conversas por dia em maio e abril de 2026"></canvas>
+</div>
+
+<div class="two-col">
+  <div>
+    <p class="section-title">Distribuição semanal — maio</p>
+    <div class="chart-wrap-sm">
+      <canvas id="chartMai" role="img" aria-label="Distribuição semanal maio"></canvas>
+    </div>
+  </div>
+  <div>
+    <p class="section-title">Distribuição semanal — abril</p>
+    <div class="chart-wrap-sm">
+      <canvas id="chartAbr" role="img" aria-label="Distribuição semanal abril"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const maio = [
+  {d:'01/mai', v:null, tipo:'feriado'},
+  {d:'02/mai', v:null, tipo:'fds'},
+  {d:'03/mai', v:null, tipo:'fds'},
+  {d:'04/mai', v:5,    tipo:'util'},
+  {d:'05/mai', v:4,    tipo:'util'},
+  {d:'06/mai', v:3,    tipo:'util'},
+  {d:'07/mai', v:15,   tipo:'util'},
+  {d:'08/mai', v:12,   tipo:'util'},
+  {d:'09/mai', v:null, tipo:'fds'},
+  {d:'10/mai', v:null, tipo:'fds'},
+  {d:'11/mai', v:23,   tipo:'util'},
+  {d:'12/mai', v:18,   tipo:'util'},
+  {d:'13/mai', v:18,   tipo:'util'},
+  {d:'14/mai', v:13,   tipo:'util'},
+  {d:'15/mai', v:13,   tipo:'util'},
+  {d:'16/mai', v:null, tipo:'fds'},
+  {d:'17/mai', v:null, tipo:'fds'},
+  {d:'18/mai', v:17,   tipo:'util'},
+  {d:'19/mai', v:28,   tipo:'util'},
+  {d:'20/mai', v:8,    tipo:'util'},
+  {d:'21/mai', v:3,    tipo:'util'},
+  {d:'22/mai', v:3,    tipo:'util'},
+  {d:'23/mai', v:null, tipo:'fds'},
+  {d:'24/mai', v:null, tipo:'fds'},
+  {d:'25/mai', v:3,    tipo:'util'},
+  {d:'26/mai', v:2,    tipo:'util'},
+  {d:'27/mai', v:1,    tipo:'util'},
+  {d:'28/mai', v:6,    tipo:'util'},
+  {d:'29/mai', v:2,    tipo:'util'},
+];
+
+const abril = [
+  {d:'01/abr', v:1,    tipo:'util'},
+  {d:'02/abr', v:2,    tipo:'util'},
+  {d:'03/abr', v:null, tipo:'feriado'},
+  {d:'04/abr', v:null, tipo:'fds'},
+  {d:'05/abr', v:null, tipo:'fds'},
+  {d:'06/abr', v:3,    tipo:'util'},
+  {d:'07/abr', v:14,   tipo:'util'},
+  {d:'08/abr', v:25,   tipo:'util'},
+  {d:'09/abr', v:16,   tipo:'util'},
+  {d:'10/abr', v:17,   tipo:'util'},
+  {d:'11/abr', v:null, tipo:'fds'},
+  {d:'12/abr', v:null, tipo:'fds'},
+  {d:'13/abr', v:24,   tipo:'util'},
+  {d:'14/abr', v:17,   tipo:'util'},
+  {d:'15/abr', v:0,    tipo:'util'},
+  {d:'16/abr', v:8,    tipo:'util'},
+  {d:'17/abr', v:8,    tipo:'util'},
+  {d:'18/abr', v:null, tipo:'fds'},
+  {d:'19/abr', v:null, tipo:'fds'},
+  {d:'20/abr', v:2,    tipo:'util'},
+  {d:'21/abr', v:1,    tipo:'util'},
+  {d:'22/abr', v:19,   tipo:'util'},
+  {d:'23/abr', v:10,   tipo:'util'},
+  {d:'24/abr', v:5,    tipo:'util'},
+  {d:'25/abr', v:null, tipo:'fds'},
+  {d:'26/abr', v:null, tipo:'fds'},
+  {d:'27/abr', v:5,    tipo:'util'},
+  {d:'28/abr', v:2,    tipo:'util'},
+  {d:'29/abr', v:3,    tipo:'util'},
+  {d:'30/abr', v:3,    tipo:'util'},
+];
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+const tickColor = isDark ? '#9c9a92' : '#73726c';
+
+const maiUtils = maio.filter(x => x.tipo === 'util' && x.v !== null);
+const abrUtils = abril.filter(x => x.tipo === 'util' && x.v !== null);
+const medMai = Math.round(maiUtils.reduce((a,b)=>a+b.v,0) / maiUtils.length * 10) / 10;
+const medAbr = Math.round(abrUtils.reduce((a,b)=>a+b.v,0) / abrUtils.length * 10) / 10;
+document.getElementById('med-mai').textContent = medMai.toFixed(1);
+document.getElementById('med-abr').textContent = medAbr.toFixed(1);
+
+const labels = maio.map(x => x.d.replace('/mai',''));
+const maiColors = maio.map(x => x.tipo === 'util' ? '#378ADD' : '#D3D1C7');
+const abrColors = abril.map(x => x.tipo === 'util' ? '#1D9E75' : '#D3D1C7');
+
+new Chart(document.getElementById('chartComparativo'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Maio',
+        data: maio.map(x => x.v ?? 0),
+        backgroundColor: maiColors,
+        borderRadius: 3,
+        borderSkipped: false,
+      },
+      {
+        label: 'Abril',
+        data: abril.slice(0,29).map(x => x.v ?? 0),
+        backgroundColor: abril.slice(0,29).map(x => x.tipo === 'util' ? '#1D9E75' : '#D3D1C7'),
+        borderRadius: 3,
+        borderSkipped: false,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: (items) => {
+            const idx = items[0].dataIndex;
+            const ds = items[0].datasetIndex;
+            return ds === 0 ? maio[idx].d : abril[idx] ? abril[idx].d : '';
+          },
+          label: (item) => {
+            const idx = item.dataIndex;
+            const ds = item.datasetIndex;
+            const entry = ds === 0 ? maio[idx] : abril[idx];
+            if (!entry) return '';
+            if (entry.tipo !== 'util') return entry.tipo === 'feriado' ? 'Feriado' : 'Fim de semana';
+            return `${item.raw} conversas`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: tickColor, font: { size: 11 }, autoSkip: false, maxRotation: 45 }, grid: { color: gridColor } },
+      y: { ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor }, beginAtZero: true }
+    }
+  }
+});
+
+const semanas = ['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5'];
+function totalSemana(dados, semIdx) {
+  const ini = semIdx * 7;
+  return dados.slice(ini, ini+7).reduce((a,b) => a + (b.tipo==='util' && b.v ? b.v : 0), 0);
+}
+
+new Chart(document.getElementById('chartMai'), {
+  type: 'bar',
+  data: {
+    labels: semanas,
+    datasets: [{
+      label: 'Maio',
+      data: semanas.map((_,i) => totalSemana(maio,i)),
+      backgroundColor: '#378ADD',
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor } },
+      y: { ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor }, beginAtZero: true }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartAbr'), {
+  type: 'bar',
+  data: {
+    labels: semanas,
+    datasets: [{
+      label: 'Abril',
+      data: semanas.map((_,i) => totalSemana(abril,i)),
+      backgroundColor: '#1D9E75',
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor } },
+      y: { ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor }, beginAtZero: true }
+    }
+  }
+});
+</script>
