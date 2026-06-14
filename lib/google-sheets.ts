@@ -144,20 +144,19 @@ export async function salvarConversa(dados: {
       /(?:da|pela|representando a?|empresa)\s+([A-ZÀ-Ú][A-Za-záàâãéèêíïóôõúüç\s]+?)(?:\s*[,!.]|\s*que|\s*aqui)/
     );
     const empresaBruta  = empresaMatch ? empresaMatch[1].trim() : null;
-    const empresasIgnorar = ['DKN', 'Sul Brasil', 'Grupo Sul Brasil', 'Suh'];
+    const empresasIgnorar = ['[EMPRESA]', '[MARCA]', '[AGENTE]'];
     const empresa = empresaBruta && !empresasIgnorar.some(e => empresaBruta.includes(e))
       ? empresaBruta : '—';
 
     const ultimaResposta = mensagensSuh[mensagensSuh.length - 1] ?? '';
     let encaminhamento = '—';
-    if (ultimaResposta.includes('Anderson'))      encaminhamento = 'Anderson Nonato (SP)';
-    else if (ultimaResposta.includes('Jean'))      encaminhamento = 'Jean Sul Brasil (PR)';
-    else if (ultimaResposta.includes('Roberto'))   encaminhamento = 'Roberto Pereira (SC)';
-    else if (ultimaResposta.includes('Andreia'))   encaminhamento = 'Andreia — Suporte';
-    else if (ultimaResposta.includes('[DISTRIBUIDOR]')) encaminhamento = 'Distribuidor';
+    const waMatch = ultimaResposta.match(/https?:\/\/wa\.me\/(\d+)/);
+    if (ultimaResposta.includes('[DISTRIBUIDOR]'))       encaminhamento = 'Distribuidor';
+    else if (ultimaResposta.includes('[TRABALHE_CONOSCO]')) encaminhamento = 'RH';
+    else if (waMatch)                                    encaminhamento = `WhatsApp: ${waMatch[1]}`;
 
     const transcricao = dados.mensagens
-      .map(m => `${m.role === 'user' ? 'Cliente' : 'Suh'}: ${m.content.slice(0, 1000)}`)
+      .map(m => `${m.role === 'user' ? 'Cliente' : '[AGENTE]'}: ${m.content.slice(0, 1000)}`)
       .join(' | ')
       .slice(0, 40000);
 

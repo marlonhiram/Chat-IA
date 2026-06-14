@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { lerConversas, atualizarResultado, atualizarObservacao } from '@/lib/google-sheets';
 
 
-const SENHA = process.env.PAINEL_SENHA ?? 'dkn2024';
+const SENHA = process.env.PAINEL_SENHA ?? '';
 
 export async function GET(req: NextRequest) {
   const senha = req.headers.get('x-painel-senha');

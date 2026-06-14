@@ -158,7 +158,7 @@ export default function PainelPage() {
               fontSize: '20px', fontWeight: '800', color: '#fff'
             }}>D</div>
             <h1 style={{ color: '#f1f5f9', fontSize: '18px', fontWeight: '700', margin: 0 }}>
-              DKN Chat — Painel
+              Chat — Painel
             </h1>
             <p style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>
               Acesso restrito
@@ -224,7 +224,7 @@ export default function PainelPage() {
           }}>D</div>
           <div>
             <span style={{ fontSize: '14px', fontWeight: '700', color: '#f1f5f9' }}>
-              DKN Chat — Painel de Monitoramento
+              Chat — Painel de Monitoramento
             </span>
             <span style={{
               marginLeft: '12px', fontSize: '11px', color: '#22c55e',

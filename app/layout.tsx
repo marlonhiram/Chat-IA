@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Suh — Consultora DKN',
-  description: 'Chat com a Suh, consultora virtual do Grupo Sul Brasil DKN',
+  title: '[AGENTE] — Assistente Virtual',
+  description: 'Chat com IA para atendimento comercial — assistente virtual especializado em [PRODUTO]',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -16,7 +16,7 @@ export function ChatWidget() {
   );
 
   const [msgs, setMsgs] = useState([
-    { role: 'assistant', content: 'Olá! Me chamo Suh, como posso ajudar você hoje? 😊' }
+    { role: 'assistant', content: 'Olá! Como posso ajudar você hoje? 😊' }
   ]);
 
   React.useEffect(() => {
@@ -115,7 +115,7 @@ export function ChatWidget() {
       /(?:da|pela|representando a?|empresa)\s+([A-ZÀ-Ú][A-Za-záàâãéèêíïóôõúüç\s]+?)(?:\s*[,!.]|\s*que|\s*aqui)/
     );
     const empresaBruta = empresaMatch ? empresaMatch[1].trim() : null;
-    const empresasIgnorar = ['DKN', 'Sul Brasil', 'Grupo Sul Brasil', 'Suh'];
+    const empresasIgnorar = ['[EMPRESA]', '[MARCA]', '[AGENTE]'];
     const empresa = empresaBruta && !empresasIgnorar.some(e => empresaBruta.includes(e))
       ? empresaBruta
       : null;
@@ -132,7 +132,7 @@ export function ChatWidget() {
     const linkMatch = ultimaResposta.match(/https?:\/\/(wa\.me|api\.whatsapp\.com)[^\s)]+/);
 
     const mensagemWpp = [
-      'Olá! Vim pelo chat do site do Grupo Sul Brasil — DKN',
+      'Olá! Vim pelo chat do site da [EMPRESA]',
       nome ? `. Meu nome é ${nome}` : '',
       empresa ? `, represento a ${empresa}` : '',
       localidade ? `, sou de ${localidade}` : '',
@@ -146,8 +146,8 @@ export function ChatWidget() {
       return `${base}?text=${encodeURIComponent(mensagemWpp)}`;
     }
 
-    // Fallback: Andreia
-    return `https://api.whatsapp.com/send/?phone=554935611505&text=${encodeURIComponent(mensagemWpp)}`;
+    // Fallback: suporte geral
+    return `https://api.whatsapp.com/send/?phone=XXXXXXXXXXX&text=${encodeURIComponent(mensagemWpp)}`;
   }
 
   // ── Renderiza botões individuais por distribuidor mencionado ─────────────
@@ -158,7 +158,7 @@ export function ChatWidget() {
     const { nome, localidade, segmento, empresa } = extrairDadosConversa(mensagens);
 
     const mensagemWpp = [
-      'Olá! Vim pelo chat do site do Grupo Sul Brasil — DKN',
+      'Olá! Vim pelo chat do site da [EMPRESA]',
       nome ? `. Meu nome é ${nome}` : '',
       empresa ? `, represento a ${empresa}` : '',
       localidade ? `, sou de ${localidade}` : '',
@@ -168,16 +168,14 @@ export function ChatWidget() {
     ].join('');
 
     const DISTRIBUIDORES = [
-      { nome: 'Jean (PR)',          tel: '5541991838361' },
-      { nome: 'Dem Bas (RS)',       tel: '5551935872363' },
-      { nome: 'TNT Paraná (PR)',    tel: '5543921026096' },
-      { nome: 'LJ Distribuição (MG)', tel: '5532935413485' },
-      { nome: 'Zantex (SP)',        tel: '5511944234241' },
+      { nome: '[DISTRIBUIDOR_1]', tel: 'XXXXXXXXXXX' },
+      { nome: '[DISTRIBUIDOR_2]', tel: 'XXXXXXXXXXX' },
+      { nome: '[DISTRIBUIDOR_3]', tel: 'XXXXXXXXXXX' },
     ];
 
     // Detecta quais distribuidores a Suh mencionou no texto
     const botoesEncontrados = DISTRIBUIDORES.filter(d => {
-      const nomeCurto = d.nome.split(' ')[0]; // "Jean", "Dem", "TNT", "LJ", "Zantex"
+      const nomeCurto = d.nome.split(' ')[0];
       return content.includes(nomeCurto);
     });
 
@@ -224,7 +222,7 @@ export function ChatWidget() {
     .replace('[PAGINA_EMPRESA]', '')
     .replace(/\[SEG:[^\]]+\]/g, '')
     .replace(/https?:\/\/(wa\.me|api\.whatsapp\.com)[^\s]*/g, '')
-    .replace(/Andreia Knecht\s*—\s*Suporte\s*(DKN|Sul Brasil)\s*/gi, '')
+    .replace(/\[SUPORTE_TECNICO_NOME\]\s*—\s*[^\n]*/gi, '')
     .trim();
 
     return (
@@ -241,7 +239,7 @@ export function ChatWidget() {
         {hasWpp && (
         <a  
           href={(() => {
-            // Extrai link wa.me da resposta se existir (ex: agente Compras → Josemar)
+            // Extrai link wa.me da resposta se existir
             const linkNaResposta = content.match(/https?:\/\/(wa\.me|api\.whatsapp\.com)[^\s]*/);
             return linkNaResposta ? linkNaResposta[0] : montarLinkWhatsApp(msgs);
           })()}
@@ -312,7 +310,7 @@ export function ChatWidget() {
                   <h4 style={{
                     fontFamily: "'Nunito', sans-serif", fontSize: '14px',
                     fontWeight: '800', color: '#fff', margin: 0
-                  }}>Suh — Consultora DKN</h4>
+                  }}>[AGENTE] — Consultora Virtual</h4>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', paddingLeft: '36px' }}>
@@ -323,7 +321,7 @@ export function ChatWidget() {
                 <span style={{
                   fontSize: '10px', color: 'rgba(255,255,255,0.55)',
                   textTransform: 'uppercase', letterSpacing: '0.08em'
-                }}>Especialista em TNT · Online</span>
+                }}>Especialista em [PRODUTO] · Online</span>
               </div>
             </div>
             <button
@@ -367,7 +365,7 @@ export function ChatWidget() {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') send(); }}
               type="text"
-              placeholder="Pergunte sobre TNT, gramaturas..."
+              placeholder="Pergunte sobre [PRODUTO]..."
             />
             <button className="chat-send" onClick={send} disabled={typing}>→</button>
           </div>
@@ -377,12 +375,12 @@ export function ChatWidget() {
       <button
         className="chat-fab-btn"
         onClick={() => setOpen(p => !p)}
-        title="Falar com a Suh"
+        title="Falar com [AGENTE]"
       >
         {open ? '✕' : (
           <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.1 }}>
             <span style={{ fontSize: '16px' }}>💬</span>
-            <span style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '0.05em', marginTop: '1px' }}>Suh</span>
+            <span style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '0.05em', marginTop: '1px' }}>[AGENTE]</span>
           </span>
         )}
       </button>

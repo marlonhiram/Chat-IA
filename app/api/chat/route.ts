@@ -1,6 +1,7 @@
- // app/api/chat/route.ts
+// app/api/chat/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { agenteFacilitador, pegarAgentePorClassificacao } from '@/lib/agents';
+import { pegarRepresentante, suporteTecnico } from '@/lib/agents/comercial';
 import { salvarConversa } from '@/lib/google-sheets';
 
 
@@ -26,7 +27,7 @@ function verificarRateLimit(ip: string): { permitido: boolean; motivo?: string }
   if (registro.count > RATE_LIMIT.maxMensagens) {
     return {
       permitido: false,
-      motivo: 'Limite de mensagens atingido. Tente novamente em 1 hora ou fale pelo WhatsApp: (49) 3561-1505.'
+      motivo: 'Limite de mensagens atingido. Tente novamente em 1 hora ou fale diretamente pelo WhatsApp.'
     };
   }
 
@@ -84,7 +85,7 @@ async function chamarGeminiComRetry(
         continue;
       }
       if (ultimo) {
-        console.error(`❌ Gemini indisponível — todas as ${tentativas} tentativas esgotadas. Encaminhando para Andreia.`);
+        console.error(`❌ Gemini indisponível — todas as ${tentativas} tentativas esgotadas. Encaminhando para suporte humano.`);
         throw new GeminiIndisponivelError(tentativas);
       }
       throw error;
@@ -196,7 +197,7 @@ export async function POST(req: NextRequest) {
 
     if (padroesSuspeitos.some(p => p.test(ultimaMensagem))) {
       return NextResponse.json({
-        content: [{ type: 'text', text: 'Só posso ajudar com informações sobre os produtos DKN. Como posso ajudar?' }]
+        content: [{ type: 'text', text: 'Só posso ajudar com informações sobre os produtos da [EMPRESA]. Como posso ajudar?' }]
       });
     }
 
@@ -211,20 +212,13 @@ export async function POST(req: NextRequest) {
     /CNPJ|razão social|orçamento|cotação/i.test(ultimaMensagem);
 
     if(isPedidoFormal) {
-      const representantes: Record<string, { nome: string; link: string}> = {
-        SC: { nome: 'Roberto Pereira', link:'https://wa.me/5549999276041' },
-        PR: { nome: 'Jean Sul Brasil', link: 'https://wa.me/5541991838361'},
-      };
-
       const ufMatch = ultimaMensagem.match(
         /\b(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)\b/
       );
       const uf = ufMatch?.[1] ?? null;
-      const rep = uf && representantes[uf]
-        ? representantes[uf]
-        : { nome: 'Anderson Nonato', link: 'https://wa.me/5511998010979'};
-      
-      const texto = `Obrigada pelo contato e pelas informações! 😊\n\nVou encaminhar seu pedido para o ${rep.nome}, nosso representante responsável pela sua região.\n\n${rep.nome}\n${rep.link}\n[WHATSAPP]`;
+      const rep = pegarRepresentante(uf);
+
+      const texto = `Obrigada pelo contato e pelas informações! 😊\n\nVou encaminhar seu pedido para o ${rep.nome}, nosso representante responsável pela sua região.\n\n${rep.nome}\n${rep.whatsapp}\n[WHATSAPP]`;
 
       const historicoCompleto = [
         ...messages,
@@ -235,7 +229,7 @@ export async function POST(req: NextRequest) {
         salvarConversa({
           sessionId: sessionId ?? 'sem-sessao',
           mensagens: historicoCompleto,
-          agente: 'Suh — Consultora Virtual DKN',
+          agente: '[AGENTE] — Consultora Virtual',
           ip,
           custoSessaoUSD: custoSessaoUSD,
 
@@ -244,7 +238,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         content: [{ type: 'text', text: texto}],
-        agente_usado: 'Suh — Consultora Virtual DKN',
+        agente_usado: '[AGENTE] — Consultora Virtual',
         versao_agente: '1.0',
         uso: { inputTokens: 0, outputTokens: 0, custoSessaoUSD },
       });
@@ -327,7 +321,7 @@ export async function POST(req: NextRequest) {
       salvarConversa({
         sessionId: sessionId ?? 'sem-sessao',
         mensagens: historicoCompleto,
-        agente: 'Suh — Consultora Virtual DKN',
+        agente: '[AGENTE] — Consultora Virtual',
         ip,
         custoSessaoUSD: custoSessaoAtualizado,
       })
@@ -335,7 +329,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       content: [{ type: 'text', text: texto }],
-      agente_usado: 'Suh — Consultora Virtual DKN',
+      agente_usado: '[AGENTE] — Consultora Virtual',
       versao_agente: '1.0',
       uso: {
         inputTokens,
@@ -349,14 +343,14 @@ export async function POST(req: NextRequest) {
 
     if (error.name === 'AbortError') {
       return NextResponse.json({
-        content: [{ type: 'text', text: 'Não consegui processar sua mensagem a tempo. Por favor, envie novamente ou fale diretamente pelo WhatsApp. https://wa.me/554935611505 [WHATSAPP]' }]
+        content: [{ type: 'text', text: `Não consegui processar sua mensagem a tempo. Por favor, envie novamente ou fale diretamente pelo WhatsApp. ${suporteTecnico.whatsapp} [WHATSAPP]` }]
       });
     }
 
     if (error.name === 'GeminiIndisponivelError') {
       console.error(`❌ ${error.message}`);
       return NextResponse.json({
-        content: [{ type: 'text', text: 'Estou com uma instabilidade no momento, mas não te deixo sem atendimento! 😊 Nossa consultora Andreia pode te ajudar agora pelo WhatsApp. https://wa.me/554935611505 [WHATSAPP]' }]
+        content: [{ type: 'text', text: `Estou com uma instabilidade no momento, mas não te deixo sem atendimento! 😊 Nossa consultora ${suporteTecnico.nome} pode te ajudar agora pelo WhatsApp. ${suporteTecnico.whatsapp} [WHATSAPP]` }]
       });
     }
 

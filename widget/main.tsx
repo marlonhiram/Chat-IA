@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ChatWidget } from '@/components/ChatWidget';
 
-class DknChatElement extends HTMLElement {
+class AiChatElement extends HTMLElement {
   private root: ReturnType<typeof ReactDOM.createRoot> | null = null;
 
   connectedCallback() {
@@ -34,7 +34,7 @@ class DknChatElement extends HTMLElement {
   }
 }
 
-// Registra o Web Component — o WordPress só precisa colocar <dkn-chat> no HTML
-if (!customElements.get('dkn-chat')) {
-  customElements.define('dkn-chat', DknChatElement);
+// Registra o Web Component — o WordPress só precisa colocar <ai-chat-widget> no HTML
+if (!customElements.get('ai-chat-widget')) {
+  customElements.define('ai-chat-widget', AiChatElement);
 }

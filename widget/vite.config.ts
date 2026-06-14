@@ -12,13 +12,13 @@ export default defineConfig({
   define: {
   'process.env.NODE_ENV': JSON.stringify('production'),
   'process.env.NEXT_PUBLIC_CHAT_API_URL': JSON.stringify(
-    process.env.NEXT_PUBLIC_CHAT_API_URL ?? 'https://project-0qgvo.vercel.app'
+    process.env.NEXT_PUBLIC_CHAT_API_URL ?? ''
     ),
   },
   build: {
     lib: {
       entry: 'widget/main.tsx',
-      name: 'DknChat',
+      name: 'AiChatWidget',
       fileName: 'chat-widget',
       formats: ['iife'],
     },
