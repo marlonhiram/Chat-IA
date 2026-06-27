@@ -19,8 +19,31 @@ npm-debug.log*
 
 .vercel
 
+# Contexto local (notas de trabalho Claude)
+_claude/
+
 # Documentação interna
 _docs/
+
+# Configurações locais de frameworks
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+secrets.json
+local.settings.json
+
+# Certificados e chaves
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+
+# Credenciais e tokens
+serviceAccountKey.json
+
+# Variáveis de ambiente adicionais
+*.env
 
 # Widget compilado (gerado por npm run build:widget)
 public/chat-widget.iife.js

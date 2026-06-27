@@ -197,7 +197,7 @@ export async function POST(req: NextRequest) {
 
     if (padroesSuspeitos.some(p => p.test(ultimaMensagem))) {
       return NextResponse.json({
-        content: [{ type: 'text', text: 'Só posso ajudar com informações sobre os produtos da [EMPRESA]. Como posso ajudar?' }]
+        content: [{ type: 'text', text: 'Só posso ajudar com informações sobre os produtos da TexFibra Brasil. Como posso ajudar?' }]
       });
     }
 
@@ -229,7 +229,7 @@ export async function POST(req: NextRequest) {
         salvarConversa({
           sessionId: sessionId ?? 'sem-sessao',
           mensagens: historicoCompleto,
-          agente: '[AGENTE] — Consultora Virtual',
+          agente: 'Clara — Consultora Virtual',
           ip,
           custoSessaoUSD: custoSessaoUSD,
 
@@ -238,7 +238,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         content: [{ type: 'text', text: texto}],
-        agente_usado: '[AGENTE] — Consultora Virtual',
+        agente_usado: 'Clara — Consultora Virtual',
         versao_agente: '1.0',
         uso: { inputTokens: 0, outputTokens: 0, custoSessaoUSD },
       });
@@ -321,7 +321,7 @@ export async function POST(req: NextRequest) {
       salvarConversa({
         sessionId: sessionId ?? 'sem-sessao',
         mensagens: historicoCompleto,
-        agente: '[AGENTE] — Consultora Virtual',
+        agente: 'Clara — Consultora Virtual',
         ip,
         custoSessaoUSD: custoSessaoAtualizado,
       })
@@ -329,7 +329,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       content: [{ type: 'text', text: texto }],
-      agente_usado: '[AGENTE] — Consultora Virtual',
+      agente_usado: 'Clara — Consultora Virtual',
       versao_agente: '1.0',
       uso: {
         inputTokens,

@@ -144,7 +144,7 @@ export async function salvarConversa(dados: {
       /(?:da|pela|representando a?|empresa)\s+([A-ZÀ-Ú][A-Za-záàâãéèêíïóôõúüç\s]+?)(?:\s*[,!.]|\s*que|\s*aqui)/
     );
     const empresaBruta  = empresaMatch ? empresaMatch[1].trim() : null;
-    const empresasIgnorar = ['[EMPRESA]', '[MARCA]', '[AGENTE]'];
+    const empresasIgnorar = ['TexFibra', 'TexFibra Brasil', 'Clara'];
     const empresa = empresaBruta && !empresasIgnorar.some(e => empresaBruta.includes(e))
       ? empresaBruta : '—';
 
@@ -156,7 +156,7 @@ export async function salvarConversa(dados: {
     else if (waMatch)                                    encaminhamento = `WhatsApp: ${waMatch[1]}`;
 
     const transcricao = dados.mensagens
-      .map(m => `${m.role === 'user' ? 'Cliente' : '[AGENTE]'}: ${m.content.slice(0, 1000)}`)
+      .map(m => `${m.role === 'user' ? 'Cliente' : 'Clara'}: ${m.content.slice(0, 1000)}`)
       .join(' | ')
       .slice(0, 40000);
 

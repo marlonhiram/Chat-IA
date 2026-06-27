@@ -115,7 +115,7 @@ export function ChatWidget() {
       /(?:da|pela|representando a?|empresa)\s+([A-ZÀ-Ú][A-Za-záàâãéèêíïóôõúüç\s]+?)(?:\s*[,!.]|\s*que|\s*aqui)/
     );
     const empresaBruta = empresaMatch ? empresaMatch[1].trim() : null;
-    const empresasIgnorar = ['[EMPRESA]', '[MARCA]', '[AGENTE]'];
+    const empresasIgnorar = ['TexFibra', 'TexFibra Brasil', 'Clara'];
     const empresa = empresaBruta && !empresasIgnorar.some(e => empresaBruta.includes(e))
       ? empresaBruta
       : null;
@@ -132,7 +132,7 @@ export function ChatWidget() {
     const linkMatch = ultimaResposta.match(/https?:\/\/(wa\.me|api\.whatsapp\.com)[^\s)]+/);
 
     const mensagemWpp = [
-      'Olá! Vim pelo chat do site da [EMPRESA]',
+      'Olá! Vim pelo chat do site da TexFibra Brasil',
       nome ? `. Meu nome é ${nome}` : '',
       empresa ? `, represento a ${empresa}` : '',
       localidade ? `, sou de ${localidade}` : '',
@@ -147,7 +147,7 @@ export function ChatWidget() {
     }
 
     // Fallback: suporte geral
-    return `https://api.whatsapp.com/send/?phone=XXXXXXXXXXX&text=${encodeURIComponent(mensagemWpp)}`;
+    return `https://wa.me/5541988880004?text=${encodeURIComponent(mensagemWpp)}`;
   }
 
   // ── Renderiza botões individuais por distribuidor mencionado ─────────────
@@ -158,7 +158,7 @@ export function ChatWidget() {
     const { nome, localidade, segmento, empresa } = extrairDadosConversa(mensagens);
 
     const mensagemWpp = [
-      'Olá! Vim pelo chat do site da [EMPRESA]',
+      'Olá! Vim pelo chat do site da TexFibra Brasil',
       nome ? `. Meu nome é ${nome}` : '',
       empresa ? `, represento a ${empresa}` : '',
       localidade ? `, sou de ${localidade}` : '',
@@ -168,9 +168,9 @@ export function ChatWidget() {
     ].join('');
 
     const DISTRIBUIDORES = [
-      { nome: '[DISTRIBUIDOR_1]', tel: 'XXXXXXXXXXX' },
-      { nome: '[DISTRIBUIDOR_2]', tel: 'XXXXXXXXXXX' },
-      { nome: '[DISTRIBUIDOR_3]', tel: 'XXXXXXXXXXX' },
+      { nome: 'Agrocenter Paulista',    tel: '5511988880101' },
+      { nome: 'Sul Agro Distribuidora', tel: '5551988880102' },
+      { nome: 'Nordeste Insumos',        tel: '5581988880103' },
     ];
 
     // Detecta quais distribuidores a Suh mencionou no texto
@@ -222,7 +222,7 @@ export function ChatWidget() {
     .replace('[PAGINA_EMPRESA]', '')
     .replace(/\[SEG:[^\]]+\]/g, '')
     .replace(/https?:\/\/(wa\.me|api\.whatsapp\.com)[^\s]*/g, '')
-    .replace(/\[SUPORTE_TECNICO_NOME\]\s*—\s*[^\n]*/gi, '')
+    .replace(/Fernanda Lima\s*—\s*[^\n]*/gi, '')
     .trim();
 
     return (
@@ -305,12 +305,12 @@ export function ChatWidget() {
                   borderRadius: '50%', display: 'flex', alignItems: 'center',
                   justifyContent: 'center', fontSize: '13px', fontWeight: '800',
                   color: '#fff', flexShrink: 0
-                }}>S</div>
+                }}>C</div>
                 <div>
                   <h4 style={{
                     fontFamily: "'Nunito', sans-serif", fontSize: '14px',
                     fontWeight: '800', color: '#fff', margin: 0
-                  }}>[AGENTE] — Consultora Virtual</h4>
+                  }}>Clara — Consultora Virtual</h4>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', paddingLeft: '36px' }}>
@@ -321,7 +321,7 @@ export function ChatWidget() {
                 <span style={{
                   fontSize: '10px', color: 'rgba(255,255,255,0.55)',
                   textTransform: 'uppercase', letterSpacing: '0.08em'
-                }}>Especialista em [PRODUTO] · Online</span>
+                }}>Especialista em Manta de Polipropileno · Online</span>
               </div>
             </div>
             <button
@@ -365,7 +365,7 @@ export function ChatWidget() {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') send(); }}
               type="text"
-              placeholder="Pergunte sobre [PRODUTO]..."
+              placeholder="Pergunte sobre Manta de Polipropileno..."
             />
             <button className="chat-send" onClick={send} disabled={typing}>→</button>
           </div>
@@ -375,12 +375,12 @@ export function ChatWidget() {
       <button
         className="chat-fab-btn"
         onClick={() => setOpen(p => !p)}
-        title="Falar com [AGENTE]"
+        title="Falar com Clara"
       >
         {open ? '✕' : (
           <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.1 }}>
             <span style={{ fontSize: '16px' }}>💬</span>
-            <span style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '0.05em', marginTop: '1px' }}>[AGENTE]</span>
+            <span style={{ fontSize: '9px', fontWeight: '800', letterSpacing: '0.05em', marginTop: '1px' }}>CLARA</span>
           </span>
         )}
       </button>

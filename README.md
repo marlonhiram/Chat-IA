@@ -1,5 +1,7 @@
 # AI Chat Widget — Assistente Virtual com IA
 
+> **Demo ao vivo:** *(link será adicionado após o deploy)* — empresa fictícia TexFibra Brasil (Manta de Polipropileno)
+
 Widget de chat com IA para atendimento comercial, desenvolvido com Next.js e Google Gemini.
 O assistente virtual classifica intenções, coleta dados do lead progressivamente e encaminha para o representante correto via WhatsApp.
 
@@ -25,9 +27,9 @@ O assistente virtual classifica intenções, coleta dados do lead progressivamen
 
 | Camada | Tecnologia |
 |--------|-----------|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Linguagem | TypeScript |
-| IA | Google Gemini 2.5 Flash + Gemini 3.1 Flash Lite |
+| IA | Google Gemini 2.5 Flash + Gemini 2.0 Flash Lite |
 | CRM | Google Sheets API (plugável — ver Supabase abaixo) |
 | Deploy | Vercel |
 | Widget embeddable | Vite (Web Component / IIFE) |
@@ -143,7 +145,7 @@ Mensagem do usuário
       ↓
 [Rate Limiter] — bloqueia se > 20 msgs/hora por IP
       ↓
-Facilitador (gemini-3.1-flash-lite) — modelo leve, baixo custo
+Facilitador (gemini-2.0-flash-lite) — modelo leve, baixo custo
   Classifica: comercial | rh | compras | financeiro | transporte | institucional
       ↓
 Agente especializado (gemini-2.5-flash) — com histórico completo da conversa
@@ -158,7 +160,7 @@ CRM (Google Sheets / Supabase) — salva sessão, agente, tokens e custo
 Frontend interpreta tags e renderiza botões contextuais
 ```
 
-O Facilitador usa um modelo mais leve e barato (`gemini-3.1-flash-lite`) para classificação — o modelo pesado (`gemini-2.5-flash`) só é acionado para a resposta final, reduzindo custo por conversa.
+O Facilitador usa um modelo mais leve e barato (`gemini-2.0-flash-lite`) para classificação — o modelo pesado (`gemini-2.5-flash`) só é acionado para a resposta final, reduzindo custo por conversa.
 
 ---
 

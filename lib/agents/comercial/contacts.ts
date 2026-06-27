@@ -9,32 +9,43 @@ export interface Distribuidor {
   telefone: string;
 }
 
+const UF_PARA_REGIAO: Record<string, string> = {
+  SP:       'SP',
+  RS:       'SUL',  SC: 'SUL',  PR: 'SUL',
+  BA:       'NORDESTE', CE: 'NORDESTE', PE: 'NORDESTE',
+  MA:       'NORDESTE', PI: 'NORDESTE', RN: 'NORDESTE',
+  PB:       'NORDESTE', AL: 'NORDESTE', SE: 'NORDESTE',
+};
+
 export const representantesPorEstado: Record<string, Representante> = {
-  ESTADO_1: { nome: '[REPRESENTANTE_ESTADO_1]', whatsapp: 'https://wa.me/XXXXXXXXXXX' },
-  ESTADO_2: { nome: '[REPRESENTANTE_ESTADO_2]', whatsapp: 'https://wa.me/XXXXXXXXXXX' },
-  ESTADO_3: { nome: '[REPRESENTANTE_ESTADO_3]', whatsapp: 'https://wa.me/XXXXXXXXXXX' },
-  DEFAULT:  { nome: '[SUPORTE_GERAL]',           whatsapp: 'https://wa.me/XXXXXXXXXXX' },
+  SP:       { nome: 'Carlos Mendes',  whatsapp: 'https://wa.me/5511988880001' },
+  SUL:      { nome: 'Ana Ferreira',   whatsapp: 'https://wa.me/5551988880002' },
+  NORDESTE: { nome: 'Roberto Alves',  whatsapp: 'https://wa.me/5581988880003' },
+  DEFAULT:  { nome: 'Fernanda Lima',  whatsapp: 'https://wa.me/5541988880004' },
 };
 
 export const representanteParceiros: Representante = {
-  nome: '[RESPONSAVEL_PARCERIAS]',
-  whatsapp: 'https://wa.me/XXXXXXXXXXX',
+  nome: 'Marcelo Costa',
+  whatsapp: 'https://wa.me/5551988880005',
 };
 
 export const suporteTecnico: Representante = {
-  nome: '[SUPORTE_TECNICO_NOME]',
-  whatsapp: 'https://wa.me/XXXXXXXXXXX',
+  nome: 'Fernanda Lima',
+  whatsapp: 'https://wa.me/5541988880004',
 };
 
 export const distribuidores: Distribuidor[] = [
-  { estado: 'ESTADO_1', nome: '[DISTRIBUIDOR_1]', telefone: '(XX) XXXX-XXXX' },
-  { estado: 'ESTADO_2', nome: '[DISTRIBUIDOR_2]', telefone: '(XX) XXXX-XXXX' },
-  { estado: 'ESTADO_3', nome: '[DISTRIBUIDOR_3]', telefone: '(XX) XXXX-XXXX' },
+  { estado: 'SP',       nome: 'Agrocenter Paulista',    telefone: '(11) 3888-1234' },
+  { estado: 'Sul',      nome: 'Sul Agro Distribuidora', telefone: '(51) 3888-5678' },
+  { estado: 'Nordeste', nome: 'Nordeste Insumos',        telefone: '(81) 3888-9012' },
 ];
 
 export function pegarRepresentante(estado?: string | null): Representante {
-  if (estado && representantesPorEstado[estado]) {
-    return representantesPorEstado[estado];
+  if (estado) {
+    const regiao = UF_PARA_REGIAO[estado.toUpperCase()];
+    if (regiao && representantesPorEstado[regiao]) {
+      return representantesPorEstado[regiao];
+    }
   }
   return representantesPorEstado.DEFAULT;
 }
