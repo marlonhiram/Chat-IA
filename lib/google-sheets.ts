@@ -74,6 +74,11 @@ export async function salvarConversa(dados: {
   ip: string;
   custoSessaoUSD?: number; // custo acumulado da sessão em USD
 }) {
+  if (!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_SHEET_ID) {
+    console.log('📋 Sheets não configurado — conversa não registrada.');
+    return;
+  }
+
   try {
     console.log(`📋 Salvando conversa: ${dados.sessionId} — ${dados.mensagens.length} mensagens`);
 

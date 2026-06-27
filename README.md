@@ -1,6 +1,6 @@
 # AI Chat Widget — Assistente Virtual com IA
 
-> **Demo ao vivo:** *(link será adicionado após o deploy)* — empresa fictícia TexFibra Brasil (Manta de Polipropileno)
+> **Demo ao vivo:** [chat-ia-henna.vercel.app](https://chat-ia-henna.vercel.app) — empresa fictícia TexFibra Brasil (Manta de Polipropileno)
 
 Widget de chat com IA para atendimento comercial, desenvolvido com Next.js e Google Gemini.
 O assistente virtual classifica intenções, coleta dados do lead progressivamente e encaminha para o representante correto via WhatsApp.
